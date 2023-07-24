@@ -1,46 +1,45 @@
 #!/usr/bin/python3
-"""Reads stdin line by line and computes metrics"""
+
+"""Script that reads stdin line by line and computes metrics"""
+
 import sys
 
 
-def print_metric(stats, filesize):
-    """Print file size and number of status codes"""
-    print("File size: {}".format(filesize))
-    for k, v in sorted(stats.items()):
-        if v:
-            print("{}: {}".format(k, v))
+def printsts(dic, size):
+    """ WWPrints information """
+    print("File size: {:d}".format(size))
+    for i in sorted(dic.keys()):
+        if dic[i] != 0:
+            print("{}: {:d}".format(i, dic[i]))
 
 
-line_count = 0
-total_file_size = 0
-status_code_dict = {
-        "200": 0,
-        "301": 0,
-        "400": 0,
-        "401": 0,
-        "403": 0,
-        "404": 0,
-        "405": 0,
-        "500": 0
-        }
+sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+       "404": 0, "405": 0, "500": 0}
 
-if __name__ == "__main__":
-    try:
-        for line in sys.stdin:
-            line_count += 1
-            list = line.split()
-            try:
-                file_size = int(list[-1])
-                total_file_size += file_size
-                status_code = list[-2]
-                if status_code in status_code_dict:
-                    status_code_dict[status_code] += 1
-            except Exception:
-                pass
+count = 0
+size = 0
 
-            if line_count % 10 == 0:
-                print_metric(status_code_dict, total_file_size)
-        print_metric(status_code_dict, total_file_size)
-    except KeyboardInterrupt:
-        print_metric(status_code_dict, total_file_size)
-        raise
+try:
+    for line in sys.stdin:
+        if count != 0 and count % 10 == 0:
+            printsts(sts, size)
+
+        stlist = line.split()
+        count += 1
+
+        try:
+            size += int(stlist[-1])
+        except:
+            pass
+
+        try:
+            if stlist[-2] in sts:
+                sts[stlist[-2]] += 1
+        except:
+            pass
+    printsts(sts, size)
+
+
+except KeyboardInterrupt:
+    printsts(sts, size)
+    raise
