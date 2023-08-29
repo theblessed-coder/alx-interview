@@ -1,20 +1,27 @@
 #!/usr/bin/python3
 
-"""Script that reads stdin line by line and computes metrics"""
+"""A script that reads stdin line by line and computes metrics."""
 
 import sys
 
 
-def printsts(dic, size):
-    """ WWPrints information """
+def printstats(dictn, size):
+    """
+    function to print output
+    Args:
+        dictn: dictionary of status codes
+        size: total file size
+    Returns:
+        Nothing
+    """
     print("File size: {:d}".format(size))
-    for i in sorted(dic.keys()):
-        if dic[i] != 0:
-            print("{}: {:d}".format(i, dic[i]))
+    for key in sorted(dictn.keys()):
+        if dictn[key] != 0:
+            print("{}: {:d}".format(key, dictn[key]))
 
 
-sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
-       "404": 0, "405": 0, "500": 0}
+stats = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+         "404": 0, "405": 0, "500": 0}
 
 count = 0
 size = 0
@@ -22,24 +29,24 @@ size = 0
 try:
     for line in sys.stdin:
         if count != 0 and count % 10 == 0:
-            printsts(sts, size)
+            printstats(stats, size)
 
-        stlist = line.split()
+        s_list = line.split()
         count += 1
 
         try:
-            size += int(stlist[-1])
-        except:
+            size += int(s_list[-1])
+        except Exception:
             pass
 
         try:
-            if stlist[-2] in sts:
-                sts[stlist[-2]] += 1
-        except:
+            if s_list[-2] in stats:
+                stats[s_list[-2]] += 1
+        except ValueError:
             pass
-    printsts(sts, size)
+    printstats(stats, size)
 
 
 except KeyboardInterrupt:
-    printsts(sts, size)
+    printstats(stats, size)
     raise
